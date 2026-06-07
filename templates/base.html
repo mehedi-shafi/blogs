@@ -1,0 +1,6 @@
+{% extends "terminus/templates/base.html" %} {% block robots %} {{ super() }}
+<script src="{{ get_url(path="js/mermaid.min.js") }}"></script>
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: "dark" });
+</script>
+{% endblock %}

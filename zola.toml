@@ -16,3 +16,12 @@ theme = "catppuccin-mocha"
 
 [extra]
 # Put all your custom variables here
+
+[extra.content_security_policy]
+enable = true
+allowed_domains = [
+    { directive = "script-src-elem", domains = ["'self'", "'unsafe-inline'"] },
+    { directive = "style-src-elem", domains = ["'self'", "'unsafe-inline'"] },
+    { directive = "style-src", domains = ["'self'", "'unsafe-inline'"] },
+    { directive = "script-src", domains = ["'self'", "'sha256-8dejonPf5yHPanKu180y1smMgAQeuMgZishNx19IwS8='"] },
+]

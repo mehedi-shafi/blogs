@@ -20,8 +20,7 @@ I was poised to lead the team and design the system. So I started with a blank s
 
 We laid out the foundational design for the system that would handle the contest management, source code submissions, judging flow and ranklist. Essentially a CRUD web application. And with the added requirement of being super reliable, we decided to go microservice route for different components and came up with the following architecture.
 
-{%/* mermaid() */%}
-
+{% mermaid() %}
 graph TD
     %% Actors
     Contestant((Contestant))
@@ -86,13 +85,13 @@ graph TD
     AsyncServices -- send and affirm emails --> SES
     SES -- password reset / contest invitation --> Contestant
     SES --> Judge
-{%/* end */%}
+{% end %}
 
 This is all very standard event driven asynchronous micorservice architecture that prioritize reliability over complexity. One may obviously say this is unnecessarily complicated for a simple CRUD backend. And they would be correct, it probably was.
 
 Here the sandbox would be the black box that we had to take over from the older system. This sandbox uses a chroot based process isolation mechanism that works roughly like this:
 
-```mermaid
+{% mermaid() %}
 graph TD
     Backend[Backend]
 
@@ -117,8 +116,16 @@ graph TD
 
     Backend -- "calls get()" --> Get
     Get -- "retrieves result (polls every 2s)" --> Queue
-```
+    
+{% end %}
 
 Yes, now you may absolutely scream at this monstricity.
 
 And of course we had to change the backend design to accomodate for this polling mechanism instead of the neat separation between submission queue vs verdict queue.
+
+Once the backend system was somewhat ready, I started reading through the codes of the sandbox to understand what needs to be done to get it up and running. While reading the code, I found out our current system assumption of having a submission queue is not enough where the backend can directly push a submission to be executed, rather it needs to go through the RPC `add()` function. Where it gets added to the sandbox's internal queue for an worker to pick it up.
+
+Which means there are now two async component in the system.
+
+<!--IMAGE DOESN'T WORK NOW FIX LATER-->
+{{ image(src="https://media.tenor.com/mg0QH3Ui9-gAAAAe/this-is-getting-out-of-hand-now-there-are-two.png", alt="now there are two of them") }}

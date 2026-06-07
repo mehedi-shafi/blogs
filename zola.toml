@@ -1,5 +1,7 @@
 # The URL the site will be built for
 base_url = "https://blogs.mehedishafi.dev"
+title = "shafi's blog"
+theme = "terminus"
 
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true

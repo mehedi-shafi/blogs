@@ -129,3 +129,51 @@ Which means there are now two async component in the system.
 
 <!--IMAGE DOESN'T WORK NOW FIX LATER-->
 {{ image(src="https://media.tenor.com/mg0QH3Ui9-gAAAAe/this-is-getting-out-of-hand-now-there-are-two.png", alt="now there are two of them") }}
+
+
+It looks roughly like this. Click on the dispatch button to see the path of one submission made.
+
+{{ async_2_async(oneshot=true) }}
+
+Because we were close to the preliminary contest, we didn't want to rework the sandbox as we already have too much on the plate to host a contest anyways. So we focused more on the backend and stability of everything coming together. Meaning we left the sandbox design as it was and built around it.
+
+So here's our backend code on receiving a submission for judging before the preliminary mock contest. 
+
+```py
+
+# submission route
+def post(self):
+    # validate and save to database
+    submission = self.validated_data.get("submission")
+    # create an async job
+    create_and_enqueue_submission.delay(submission)
+
+# the async function
+@job
+def create_and_enqueue_submission(submission: Submission) -> None:
+    # get test cases for the submission
+    test_cases: list[TestCase] = get_test_cases(submission)
+
+    test_case_results = []
+    for test_case in test_cases:
+        # rpc request to enqueue the submission in the sandbox
+        uuid = sandbox.add(
+            get_submission_payload(submission)
+        )
+
+        # now we wait
+        while True:
+          if (result := sandbox.get(uuid = uuid)) is None:
+              sleep(2)
+              # every two seconds we poll for status for the status 
+              # of a test_case execution
+        if validate_result(result):
+            save_test_case_result(result)
+            test_case_results.append(result)
+        else:
+            break
+
+    create_verdict_for_submission(test_case_results)
+```
+
+There's usually a mock contest before the main preliminary contest. It's recommended for the contestants to join the contests for various reasons including load-testing the system itself, find some small bugs and fix them beforehand. And it went pretty well. At this point, I should mention I was on a vacation during this time (3 days in for the preliminary round) in another country with limited availability. The team has done absolutely phenomenal job by preparing the backend for the mock and for the preliminary contest during the time. If it weren't for them, either I would have to cancel my trip, or wouldn't be able to delivery the system at all.

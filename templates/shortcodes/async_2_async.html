@@ -1,0 +1,159 @@
+<div class="async-sim">
+    <link
+        rel="stylesheet"
+        href="{{ get_url(path='css/async_canvas_style.css') }}"
+    />
+
+    <div class=".sim-scroll-wrapper">
+        <div id="sim-container">
+            {% if not oneshot %}
+            <div id="dashboard">
+                <div class="control-group">
+                    <label>
+                        <span>Submission/sec <span id="val-api">1</span></span>
+                        <button
+                            class="btn"
+                            id="btn-manual-dispatch"
+                            style="background: #5e81ac; border-color: #81a1c1"
+                        >
+                            + Dispatch 1
+                        </button>
+                    </label>
+                    <input
+                        type="range"
+                        id="slide-api"
+                        min="0"
+                        max="10"
+                        value="1"
+                    />
+                </div>
+                <div class="control-group">
+                    <label
+                        >Backend async worker count
+                        <span id="val-fleetA" style="color: #f43f5e"
+                            >50</span
+                        ></label
+                    >
+                    <input
+                        type="range"
+                        id="slide-fleetA"
+                        min="1"
+                        max="120"
+                        value="50"
+                    />
+                </div>
+                <div class="control-group">
+                    <label
+                        >Sandbox worker count
+                        <span id="val-fleetB" style="color: #22c55e"
+                            >5</span
+                        ></label
+                    >
+                    <input
+                        type="range"
+                        id="slide-fleetB"
+                        min="1"
+                        max="120"
+                        value="50"
+                    />
+                </div>
+                <div class="control-group">
+                    <label
+                        >Test Case Per Submission (avg)
+                        <span id="val-subtasks" style="color: #a855f7"
+                            >5</span
+                        ></label
+                    >
+                    <input
+                        type="range"
+                        id="slide-subtasks"
+                        min="1"
+                        max="10"
+                        value="5"
+                    />
+                </div>
+                <div class="control-group">
+                    <label
+                        >Base Processing Time (sec)
+                        <span id="val-btime">30</span></label
+                    >
+                    <input
+                        type="range"
+                        id="slide-btime"
+                        min="5"
+                        max="60"
+                        value="20"
+                        step="5"
+                    />
+                </div>
+                <div class="control-group">
+                    <label
+                        >Simulation Speed Scale
+                        <span id="val-scale" style="color: #eab308"
+                            >10x</span
+                        ></label
+                    >
+                    <input
+                        type="range"
+                        id="slide-scale"
+                        min="1"
+                        max="50"
+                        value="20"
+                    />
+                </div>
+
+                <div id="playback-bar">
+                    <button id="btn-play-pause">Play Auto Ingress</button>
+                    <span
+                        id="status-text"
+                        style="
+                            font-size: 12px;
+                            color: #4c566a;
+                            font-family: monospace;
+                        "
+                        >AUTO INGRESS: OFF (MANUAL ONLY)</span
+                    >
+                </div>
+            </div>
+            {% endif %}
+
+            <div id="canvas-container">
+                <canvas id="simCanvas" width="960" height="440"></canvas>
+            </div>
+
+            <div id="metrics">
+                <div class="metric-box">
+                    Submission Backlog:
+                    <span id="m-queueA" style="color: #38bdf8">0</span>
+                </div>
+                <div class="metric-box">
+                    Sandbox Backlog:
+                    <span id="m-queueB" style="color: #a855f7">0</span>
+                </div>
+                <div class="metric-box">
+                    Active Poll Loops:
+                    <span id="m-polls" style="color: #f43f5e">0</span>
+                </div>
+                <div class="metric-box">
+                    Successful Tasks:
+                    <span id="m-success" style="color: #22c55e">0</span>
+                </div>
+                <div class="metric-box">
+                    Failed Tasks (Timeout):
+                    <span id="m-fail" style="color: #bf616a">0</span>
+                </div>
+            </div>
+
+            {% if oneshot %}
+            <button
+                class="btn"
+                id="btn-manual-dispatch"
+                style="background: #5e81ac; border-color: #81a1c1"
+            >
+                + Dispatch 1
+            </button>
+            {% endif %}
+        </div>
+    </div>
+    <script src="{{ get_url(path='js/async_canvas_sim.js') }}"></script>
+</div>

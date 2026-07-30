@@ -1,0 +1,11 @@
+<video src="{{ src }}"
+       {% if class is defined %}class="{{ class }}"{% endif %}
+       {% if width is defined %}width="{{ width }}"{% endif %}
+       {% if height is defined %}height="{{ height }}"{% endif %}
+       {% if poster is defined %}poster="{{ poster }}"{% endif %}
+       {% if autoplay is defined and autoplay %}autoplay{% endif %}
+       {% if loop is defined and loop %}loop{% endif %}
+       {% if muted is defined and muted %}muted{% endif %}
+       controls>
+    Your browser does not support the video tag.
+</video>

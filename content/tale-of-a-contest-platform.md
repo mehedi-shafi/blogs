@@ -273,7 +273,7 @@ Our system now has detailed observability using opentracing telemetry (traces, m
 
 We treated the symptom instead of the root cause. And we paid the price in memes and trolls.
 
-{{ video(src="/images/images/baps_speed.mp4") }}
+{{ video(src="/media/videos/baps_speed.mp4") }}
 
 ### Fixing the sandbox data back-and-forth
 

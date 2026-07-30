@@ -1,28 +1,27 @@
 .sim-scroll-wrapper {
     width: 100%;
-    overflow-x: auto;
-    padding: 10px 0;
+    box-sizing: border-box;
 }
-#sim-container {
+
+.sim-container {
     margin: 0 auto;
     background-color: #0f1115;
     color: #e2e8f0;
-    font-family:
-        system-ui,
-        -apple-system,
-        sans-serif;
+    font-family: system-ui, -apple-system, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 30px;
+    padding: 24px;
     border-radius: 16px;
     border: 1px solid #2e3440;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-    width: fit-content;
+    width: 100%;
     box-sizing: border-box;
 }
-#dashboard {
+
+/* Fixed 3-column dashboard grid */
+.sim-dashboard {
     background: #1e222b;
     padding: 20px;
     border-radius: 12px;
@@ -30,15 +29,18 @@
     margin-bottom: 15px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    width: 960px;
+    gap: 16px 20px;
+    width: 100%;
     box-sizing: border-box;
 }
+
+/* Clean Form Control Groups */
 .control-group {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
 }
+
 .control-group label {
     font-size: 12px;
     font-weight: 600;
@@ -46,31 +48,69 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    white-space: nowrap;
 }
+
+/* Custom styled Range Sliders */
 .control-group input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
     width: 100%;
-    accent-color: #38bdf8;
-    background: #2e3440;
     height: 6px;
+    background: #2e3440;
     border-radius: 3px;
+    outline: none;
+    border: none;
+    margin: 4px 0;
     cursor: pointer;
 }
+
+.control-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    transition: transform 0.1s ease;
+}
+
+.control-group input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+}
+
+.control-group input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Sleek Buttons */
 .btn {
     background: #3b4252;
     color: #e2e8f0;
     border: 1px solid #4c566a;
-    padding: 3px 8px;
+    padding: 4px 10px;
     border-radius: 4px;
     font-size: 11px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 600;
     transition: all 0.2s ease;
 }
+
 .btn:hover {
     background: #434c5e;
     border-color: #5e81ac;
 }
-#playback-bar {
+
+/* Clean Bottom Playback Bar */
+.playback-bar {
     grid-column: span 3;
     display: flex;
     justify-content: center;
@@ -80,40 +120,57 @@
     padding-top: 15px;
     margin-top: 5px;
 }
-#btn-play-pause {
+
+.btn-play-pause {
     background: #81a1c1;
-    color: #2e3440;
+    color: #1e222b;
     border: none;
-    padding: 8px 24px;
-    font-size: 13px;
+    padding: 8px 20px;
+    font-size: 12px;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 700;
+    transition: background 0.2s ease;
 }
-#canvas-container {
+
+.status-text {
+    font-size: 11px;
+    color: #64748b;
+    font-family: monospace;
+}
+
+/* Canvas & Metrics Responsiveness */
+.sim-canvas-container {
     position: relative;
+    width: 100%;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     border-radius: 12px;
     overflow: hidden;
     border: 1px solid #2e3440;
 }
-canvas {
+
+.simCanvas {
     display: block;
     background: #14171e;
+    width: 100%;
+    height: auto;
 }
-#metrics {
+
+.sim-metrics {
     width: 100%;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 10px;
-    margin-top: 10px;
+    margin-top: 12px;
     font-family: monospace;
     font-size: 11px;
+    box-sizing: border-box;
 }
+
 .metric-box {
     background: #14171e;
     padding: 8px;
-    border-radius: 4px;
+    border-radius: 6px;
     border: 1px solid #2e3440;
     text-align: center;
 }

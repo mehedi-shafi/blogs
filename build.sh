@@ -11,3 +11,5 @@ main() {
 }
 
 set -euo pipefail
+
+main

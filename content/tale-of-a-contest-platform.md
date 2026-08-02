@@ -259,7 +259,7 @@ This graph shows the average time in minutes to judge a submission. And you can 
 
 ## The lesson
 
-They say you gotta take the lesson from your failures. So what did we learn? 
+They say you gotta take the lesson from your failures. So what did we learn?
 
 ### No observability
 
@@ -284,6 +284,43 @@ We updated the sandbox to follow the initial design with message queue for submi
 - Detailed observability into the sandbox.
 - Automated retries backed by DLQ.
 
+{% mermaid() %}
+graph TD
+    %% Nodes
+    A[submissions api]
+    B[Submission-queue]
+    C["<b>Saber Worker</b><br>[Software System]<br><small>Executes and judges one submission with all test cases in one go.</small>"]
+    D[("<b>S3</b><br>[storage: aws s3]<br><small>Pulls Code, I/O files and puts back I/O files</small>")]
+    E[Verdict-Queue]
+    F[verdict worker]
+
+    %% Connections
+    A --> B
+    B --> C
+    C <--> D
+    C --> E
+    E --> F
+
+    %% Notes
+    G["pulls verdict messages from verdict queue and updates submissions and test cases as they arrives. can be scaled as necessary"]
+    G -.- F
+
+    %% Styling
+    style C fill:#1d70b8,color:#fff,stroke:#1d70b8
+    style D fill:#2b96d1,color:#fff,stroke:#2b96d1
+    style A fill:#fff,stroke:#000,rx:10,ry:10
+    style F fill:#fff,stroke:#000,rx:10,ry:10
+    style B fill:#fff,stroke:#000
+    style E fill:#fff,stroke:#000
+    style G fill:none,stroke:none
+{% end %}
+
 ## Conclusion
 
-I have been meaning to pick up writing blogs again. And this has been in my mind for a while to
+The initial bapsoj team is now disbanded. We all worked on the project as a side project without any hope for any gains. I do not know how far the platform will support the community in the future, but I do hope the platform stays online and gets more and more people passionate about programming involved.
+
+
+
+## Footnote
+
+I have been meaning to pick up writing blogs again. And this has been in my mind for a while to capture this story. This is a mix of both a technical blog and a story. Making the nature of this writing a bit non-continuous on either way. I do apologies for that. Hopefully it will get better with time, and I will pick some writings with some deep dives

@@ -3,21 +3,21 @@ title = "A Tale of a Contest Platform"
 date = "2026-05-25"
 +++
 
-### The agreement and a timeline.
+## The agreement and a timeline.
 
 In a warm summer day in 2023, a close senior of mine suddenly called me with an apparent urgency in his tone. The call lasted for 20 minutes and I was pulled into (in my own accord and with excitement) working on a project that would serve the competitive programming community of Bangladesh.
 
 ICPC is a very popular (if not the most) event for competitive programming community in Bangladesh. It has established itself as the biggest and the most prestigious event for undergrad students throughout the country attending Computer Science or SWE or other relevant fields of study.
 
-The ICPC ruling state that the regional contest needs to be run in a contest hosting platform that is not built for commercial gains. Previously that platform was [codemarshal](https://algo.codemarshal.org). That platform shutdown couple of years before for many reasons, and the fact that the system itself was old and could not held onto massive load a regional contest exerts on it.
+The ICPC rules state that the regional contest needs to be run in a contest hosting platform that is not built for commercial gains. Previously that platform was [codemarshal](https://algo.codemarshal.org). That platform shutdown couple of years before for many reasons, and the fact that the system itself was old and could not held onto massive load a regional contest exerts on it.
 
 We were tasked with building a new shiny platform that takes the old engine (the core execution sandbox) and make a system around it to host such massive regional contests. We would then be improving or creating new sandbox on a later time. The timeline was 3 months to ICPC 2023 Dhaka Regional for the first contest of the platform. I say tasked but the team came in voluntarily with no gain in mind and only for the love of the game itself. Everyone we onboarded to the team had the common goal of "let's see if we can do a good job or not!".
 
 I was poised to lead the team and design the system. So I started with a blank system design diagram to design the most stable, always available system that can handle the pressure of a country-wide online preliminary contest.
 
-**Spoiler Alert** We did do that back to back in 2024 and 2025 just not the first iteration.
+We did do that back-to-back in 2024 and 2025 just not the first iteration.
 
-### The design with a black box in the middle
+## The design with a black box in the middle
 
 We laid out the foundational design for the system that would handle the contest management, source code submissions, judging flow and ranklist. Essentially a CRUD web application. And with the added requirement of being super reliable, we decided to go microservice route for different components and came up with the following architecture.
 
@@ -169,7 +169,6 @@ def create_and_enqueue_submission(submission: Submission) -> None:
         if validate_result(result):
             save_test_case_result(result)
             test_case_results.append(result)
-            break
         else:
             # logics for failed test case
             break
@@ -187,7 +186,7 @@ Anyways, back to the story.
 
 There's usually a mock contest before the main preliminary contest. It is recommended for the contestants to join the contest for various reasons including load-testing the system itself, find some small bugs and fix them beforehand. And it went pretty well. At this point, I should mention I was on a vacation during this time (3 days in for the preliminary round) in another country with limited availability. The team has done absolutely phenomenal job by preparing the backend for the mock and for the preliminary contest during the time. If it weren't for them, either I would have to cancel my trip, or wouldn't be able to delivery the system at all.
 
-So back to the mock contest. It went as well as you can imagine for a system running in production for the first time. There were bunch of bugs. Standing not working, clarification is public forever. On the bright side submissions were working. Main backend seemed stable. No critical crashes, scaling was fine. But looking at the number of submission and rate of submission per minute, we could forsee a lot more to expect.
+So back to the mock contest. It went as well as you can imagine for a system running in production for the first time. There were bunch of bugs. Ranklist not working, clarification is public forever. On the bright side submissions were working. Main backend seemed stable. No critical crashes, scaling was fine. But looking at the number of submission and rate of submission per minute, we could forsee a lot more to expect.
 
 Here's the back of the head calculation we did for actual preliminary contest.
 
@@ -201,21 +200,20 @@ Based on this we decided on the scale with 20 worker instance -> 3 sandbox per w
 
 > What is this "PEAK"?
 
-In a contest the peak is two point of the contest, ~5 minutes before the contest begins to first 10 minutes of the contest. And the last 10 minutes of the contest. For the first 15~20 minutes it's because contestants are trying to see whether the contest is online, and for to read the problem statements. During this period the 7500 users armed with refresh can reach up to 75000rpm / 120rps quite easily. We have faced even more.
+In a contest the peak is two point of the contest, ~5 minutes before the contest begins to first 10 minutes of the contest. And the last 10 minutes of the contest. For the first 15-20 minutes it's because contestants are trying to see whether the contest is online, and for to read the problem statements. During this period the 7500 users armed with refresh can reach up to 75000rpm / 1200rps quite easily. We have faced even more.
 
-Auto scaling won't work in this scenario because of the sudden burst load balancer cannot finish provisioning new API instance fast enough to handle the incoming floodgate and can results in api pods dying before becoming healthy. We knew this, and we prepared by pre-scaling the backend to max before the load-balancing kicks and gracefully scale down.
+Auto scaling won't work in this scenario because of the sudden burst load balancer cannot finish provisioning new API instance fast enough to handle the incoming floodgate and can results in api tasks dying before becoming healthy. We knew this, and we prepared by pre-scaling the backend to max before the load-balancing kicks and gracefully scale down.
 
-> insert image for a request/s graph.
 
-## The Night before Preli
+## The Night before preliminary
 
 ### Current issues at hand
 
-- Standing not working.
-- Standing worker deployment process is not defined.
+- Ranklist not working.
+- Ranklist worker deployment process is not defined.
 - Execution must follow the order of test case.
 
-We had a good night sleep of 2h on average per person by making last minute fixes, and making dry runs with what we already had. Everything seemed "fine". Calculations felt on point. Nothing to worry.
+We had a good night's sleep of 2h on average per person while making last minute fixes, and making dry runs with what we already had. Everything seemed "fine". Calculations felt on point. Nothing to worry.
 
 ## And the contest began.
 
@@ -223,13 +221,13 @@ Unlike mock, the Peak we talked about happened during preli. A massive force of 
 
 Apart from the contestants, coaches, university faculties associated, organizers sums up to this huge number. Even with the pre-scaling some of our instances died due to the pressure and load-balancer scaled up further. It was not the worst thing to happen in the contest. Within 5 minutes of the contest began our backend scaled up and everything was fine, CRUD wise. With this massive influx though, we lost about 500 request with a status code of 500. Not too bad, I would say. Could have been flawless, but not exactly very bad either.
 
-## Things were looking OKAY
+## Things were looking okay
 
 Until we hit the one hour mark in the contest. This is where most team made at least one submission. We noticed the Submission backlog was growing. Meaning a lot of submissions were waiting in the state of "RUNNING" or "PENDING". So we don't have enough workers. First what we did was look into whether all workers were live and working so far. And things looked "fine" on the sandbox end. Which means we need to scale up.
 
 ## The mistake
 
-Because backend async was the one setting the state of a submission for "PENDING" (waiting to go to sandbox) to "RUNNING" (submission in the sandbox) queue. We made a massive mistake of increasing the number of workers in the async workers from 60 workers to whooping 95 workers. And for a minute we thought it was the right decision, because the queue had less submissions in the "PENDING" state and more in running. Meanwhile we did provission more EC2 instances from AWS to make more sandbox workers. But we never spun up more sandbox worker.
+Because backend async was the one setting the state of a submission for "PENDING" (waiting to go to sandbox) to "RUNNING" (submission in the sandbox) queue. We made a massive mistake of increasing the number of workers in the backend async workers from 60 workers to whopping 95 workers. And for a minute we thought it was the right decision, because the queue had less submissions in the "PENDING" state and more in running. Meanwhile we did provission more EC2 instances from AWS to make more sandbox workers. But we never spun up more sandbox worker.
 
 Here's the same simulation for you with some knobs to play around this time. Hit the play auto ingress to start the simulation with original scale of the system. A one submission per second (60 per minute), 50 async workers, 50 sandbox worker etc. And an arbitrary time of 20s to process one test case.
 
@@ -261,9 +259,9 @@ This graph shows the average time in minutes to judge a submission. And you can 
 
 They say you gotta take the lesson from your failures. So what did we learn?
 
-### No observability
+### Nearly no observability
 
-Our system had no observability. We were blind into every part of the system. We didn't have any metrics, tracings, (centralized logs), error tracking, alerting for anything. So every investigation was jumping blindly into either logs from cloudwatch or numbers from AWS dashboards to go forward with.
+Our system had almost no observability except cloudwatch logs and no alerting system to take action or get alerted based on that. We were blind into every part of the system. We didn't have any metrics, tracings, (centralized logs), error tracking, alerting for anything. So every investigation was jumping blindly into either logs from cloudwatch or numbers from AWS dashboards to go forward with.
 
 We didn't know even if we were slow we were still judging 50 submissions per minute, and if we did absolutely nothing we would be fine. Because the mistake was made during a influx of more submissions per minute than average.
 
